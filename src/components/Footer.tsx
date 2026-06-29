@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
-    <footer className="bg-charcoal text-cream py-[50px]">
-      <div className="max-w-[1280px] mx-auto px-12 flex items-center justify-between flex-wrap gap-5">
+    <footer className="bg-charcoal text-cream py-10 md:py-[50px]">
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-5 text-center md:text-left">
         <div className="font-heading font-bold text-[22px] flex items-center gap-[7px]">
           Leopardo&apos;s
           <span className="w-[7px] h-[7px] rounded-full bg-ember inline-block translate-y-0.5" />

@@ -98,9 +98,9 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="max-w-[1100px] mx-auto px-8 py-10">
+      <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 md:py-10">
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {[
             { label: "Gesamt",      value: counts.total,    color: "text-charcoal" },
             { label: "Offen",       value: counts.pending,  color: "text-amber-600" },
@@ -230,7 +230,7 @@ export default function AdminDashboard() {
                     <div className="font-semibold text-[16px] text-charcoal leading-tight">{b.name}</div>
                     <div className="text-[13px] text-stone truncate">{b.email}</div>
                   </div>
-                  <div className="hidden md:flex gap-6 text-[14px] text-taupe">
+                  <div className="hidden lg:flex gap-6 text-[14px] text-taupe">
                     {b.date && (
                       <span>📅 {new Date(b.date).toLocaleDateString("de-DE")}</span>
                     )}

@@ -21,26 +21,26 @@ export default function AvailabilityCalendar() {
 
   return (
     <>
-      <section id="verfugbarkeit" className="bg-parchment py-[90px]">
-        <div className="max-w-[1280px] mx-auto px-12">
-          <div className="flex gap-[70px] items-start">
+      <section id="verfugbarkeit" className="bg-parchment py-14 md:py-[90px]">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12">
+          <div className="flex flex-col md:flex-row gap-10 md:gap-[70px] items-start">
             {/* Left copy */}
-            <div className="w-[38%] shrink-0 pt-4">
+            <div className="w-full md:w-[38%] md:shrink-0 md:pt-4">
               <div
-                className="font-script text-[26px] text-ember mb-1"
+                className="font-script text-[24px] md:text-[26px] text-ember mb-1"
                 style={{ transform: "rotate(-1.5deg)" }}
               >
                 check first
               </div>
-              <h2 className="font-heading font-bold text-[48px] leading-[1] tracking-[-0.02em] mt-0 mb-4">
+              <h2 className="font-heading font-bold text-[36px] md:text-[48px] leading-[1] tracking-[-0.02em] mt-0 mb-4">
                 Wann sind wir frei?
               </h2>
-              <p className="text-[17px] leading-[1.6] text-stone max-w-[340px] mt-0 mb-6">
+              <p className="text-[16px] md:text-[17px] leading-[1.6] text-stone max-w-[340px] mt-0 mb-6">
                 Rote Tage sind bereits vergeben. Freie Tage – sende uns direkt eine Anfrage.
               </p>
               <button
                 onClick={() => setModalOpen(true)}
-                className="px-[26px] py-[13px] rounded-[100px] bg-ember text-white font-semibold text-[15px] hover:bg-[#C2491F] transition-colors border-none cursor-pointer"
+                className="w-full md:w-auto px-[26px] py-[13px] rounded-[100px] bg-ember text-white font-semibold text-[15px] hover:bg-[#C2491F] transition-colors border-none cursor-pointer"
               >
                 Anfrage senden →
               </button>
@@ -48,7 +48,7 @@ export default function AvailabilityCalendar() {
 
             {/* Right calendar card */}
             <div
-              className="flex-1 bg-white rounded-[20px] p-8"
+              className="flex-1 w-full bg-white rounded-[20px] p-5 md:p-8"
               style={{ boxShadow: "0 20px 50px -28px rgba(27,23,20,.35)" }}
             >
               <Calendar markedDates={markedDates} />

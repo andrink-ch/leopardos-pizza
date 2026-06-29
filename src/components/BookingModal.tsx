@@ -68,12 +68,12 @@ export default function BookingModal({ onClose }: Props) {
         style={{ boxShadow: "0 32px 80px -20px rgba(27,23,20,.6)" }}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-cream px-10 pt-8 pb-5 flex items-start justify-between border-b border-charcoal/10">
+        <div className="sticky top-0 z-10 bg-cream px-6 md:px-10 pt-6 md:pt-8 pb-4 md:pb-5 flex items-start justify-between border-b border-charcoal/10">
           <div>
-            <div className="font-script text-[22px] text-ember" style={{ transform: "rotate(-1deg)" }}>
+            <div className="font-script text-[20px] md:text-[22px] text-ember" style={{ transform: "rotate(-1deg)" }}>
               lass uns planen
             </div>
-            <h2 className="font-heading font-bold text-[36px] leading-tight tracking-[-0.02em] mt-0.5 mb-0">
+            <h2 className="font-heading font-bold text-[28px] md:text-[36px] leading-tight tracking-[-0.02em] mt-0.5 mb-0">
               Deine Anfrage
             </h2>
           </div>
@@ -105,7 +105,7 @@ export default function BookingModal({ onClose }: Props) {
                   setLoading(false);
                 }
               }}
-            className="px-10 py-8 flex flex-col gap-8"
+            className="px-6 md:px-10 py-6 md:py-8 flex flex-col gap-8"
           >
             {/* Section 1: Event */}
             <div>
@@ -114,7 +114,7 @@ export default function BookingModal({ onClose }: Props) {
                 Deine Veranstaltung
               </h3>
               <div className="flex flex-col gap-[14px]">
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-4">
                   <label className="flex-1 flex flex-col gap-[6px]">
                     <span className="text-[13px] font-semibold text-taupe">Name *</span>
                     <input required value={form.name} onChange={set("name")} placeholder="Maria Rossi" className={inputClass} style={borderStyle} />
@@ -124,7 +124,7 @@ export default function BookingModal({ onClose }: Props) {
                     <input required type="email" value={form.email} onChange={set("email")} placeholder="maria@email.de" className={inputClass} style={borderStyle} />
                   </label>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-4">
                   <label className="flex-1 flex flex-col gap-[6px]">
                     <span className="text-[13px] font-semibold text-taupe">Telefon</span>
                     <input type="tel" value={form.phone} onChange={set("phone")} placeholder="+49 89 123 456" className={inputClass} style={borderStyle} />
@@ -134,7 +134,7 @@ export default function BookingModal({ onClose }: Props) {
                     <input required type="number" min="10" value={form.guests} onChange={set("guests")} placeholder="ca. 40" className={inputClass} style={borderStyle} />
                   </label>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-4">
                   <label className="flex-1 flex flex-col gap-[6px]">
                     <span className="text-[13px] font-semibold text-taupe">Datum *</span>
                     <input required type="date" value={form.date} onChange={set("date")} className={inputClass} style={borderStyle} />
