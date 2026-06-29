@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #F4EEE2;
+  --color-parchment: #EDE6D6;
+  --color-linen: #FBF8F1;
+  --color-charcoal: #1B1714;
+  --color-ember: #D8542B;
+  --color-taupe: #4A433C;
+  --color-stone: #6B6259;
+
+  --animate-ember: ember-glow 4s ease-in-out infinite;
+}
+
+@theme inline {
+  --font-sans: var(--font-hanken), sans-serif;
+  --font-heading: var(--font-bricolage), sans-serif;
+  --font-script: var(--font-caveat), cursive;
+}
+
+@keyframes ember-glow {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 0.9; }
+}
+
+::placeholder {
+  color: #A89C8B;
+  opacity: 1;
+}
