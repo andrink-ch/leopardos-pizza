@@ -25,7 +25,7 @@ export default function Hero() {
         </p>
         <div className="flex gap-[14px] items-center mb-[30px]">
           <a
-            href="#anfrage"
+            href="#verfugbarkeit"
             className="no-underline px-[30px] py-[16px] rounded-[100px] bg-ember text-white font-semibold text-[16px] hover:bg-[#C2491F] transition-colors"
           >
             Anfrage senden

@@ -13,7 +13,7 @@ export default function Nav() {
           Galerie
         </a>
         <a
-          href="#anfrage"
+          href="#verfugbarkeit"
           className="no-underline px-[22px] py-[11px] rounded-[100px] bg-charcoal text-cream font-semibold hover:bg-taupe transition-colors"
         >
           Anfrage senden
