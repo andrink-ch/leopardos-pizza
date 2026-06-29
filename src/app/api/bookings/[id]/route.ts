@@ -24,7 +24,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
 
-  const booking = updateBookingStatus(id, status);
+  const booking = await updateBookingStatus(id, status);
   if (!booking) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(booking);
 }

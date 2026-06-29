@@ -14,11 +14,11 @@ export async function GET() {
   if (!(await isAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  return NextResponse.json(getBookings());
+  return NextResponse.json(await getBookings());
 }
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const booking = addBooking(data);
+  const booking = await addBooking(data);
   return NextResponse.json(booking, { status: 201 });
 }
