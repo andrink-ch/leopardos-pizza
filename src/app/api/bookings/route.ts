@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getBookings, addBooking } from "@/lib/bookings";
+import { sendBookingNotification } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -20,5 +21,6 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const data = await req.json();
   const booking = await addBooking(data);
+  sendBookingNotification(booking).catch(console.error);
   return NextResponse.json(booking, { status: 201 });
 }

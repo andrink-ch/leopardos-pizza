@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import type { Booking } from "@/lib/types";
+import DatePicker from "./DatePicker";
+import TimePicker from "./TimePicker";
 
 interface Props {
   onClose: () => void;
@@ -87,8 +89,10 @@ export default function BookingModal({ onClose }: Props) {
 
         {!submitted ? (
           <form
+            onKeyDown={(e) => { if (e.key === "Enter" && (e.target as HTMLElement).tagName === "INPUT") e.preventDefault(); }}
             onSubmit={async (e) => {
                 e.preventDefault();
+                if (!form.date) { setError("Bitte wähle ein Datum."); return; }
                 setLoading(true);
                 setError("");
                 try {
@@ -137,11 +141,21 @@ export default function BookingModal({ onClose }: Props) {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <label className="flex-1 flex flex-col gap-[6px]">
                     <span className="text-[13px] font-semibold text-taupe">Datum *</span>
-                    <input required type="date" value={form.date} onChange={set("date")} className={inputClass} style={borderStyle} />
+                    <DatePicker
+                      value={form.date}
+                      onChange={(v) => setForm((f) => ({ ...f, date: v }))}
+                      inputClass={inputClass}
+                      borderStyle={borderStyle}
+                    />
                   </label>
                   <label className="flex-1 flex flex-col gap-[6px]">
                     <span className="text-[13px] font-semibold text-taupe">Uhrzeit</span>
-                    <input type="time" value={form.time} onChange={set("time")} className={inputClass} style={borderStyle} />
+                    <TimePicker
+                      value={form.time}
+                      onChange={(v) => setForm((f) => ({ ...f, time: v }))}
+                      inputClass={inputClass}
+                      borderStyle={borderStyle}
+                    />
                   </label>
                 </div>
                 <label className="flex flex-col gap-[6px]">
