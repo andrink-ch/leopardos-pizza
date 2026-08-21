@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 
@@ -139,12 +140,12 @@ export default function ProductsPage() {
             Handgemachtes Chiliöl mit geröstetem Knoblauch und sizilianischem Oregano. Nur vor Ort erhältlich — direkt bei unseren Events.
           </p>
           <div className="flex flex-wrap gap-3 md:gap-[14px] items-center">
-            <a
+            <Link
               href="/#verfugbarkeit"
               className="no-underline px-6 py-[14px] md:px-[30px] md:py-[16px] rounded-[100px] bg-ember text-white font-semibold text-[15px] md:text-[16px] hover:bg-[#C2491F] transition-colors"
             >
               Event buchen
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -248,13 +249,13 @@ export default function ProductsPage() {
         <p className="text-taupe leading-[1.7] mx-auto mb-9" style={{ fontSize: "16px", maxWidth: "460px" }}>
           Das Leopardo&apos;s Pizzaöl gibt es ausschliesslich direkt bei unseren Catering-Events — solange der Vorrat reicht.
         </p>
-        <a
+        <Link
           href="/#verfugbarkeit"
           className="no-underline inline-block font-semibold hover:bg-[#C2491F] transition-colors"
           style={{ padding: "15px 34px", borderRadius: "100px", background: "#D8542B", color: "#fff", fontSize: "16px" }}
         >
           Event anfragen
-        </a>
+        </Link>
       </section>
 
       <Footer />

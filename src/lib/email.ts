@@ -1,10 +1,9 @@
 import nodemailer from "nodemailer";
-import type { Booking } from "./types";
+import type { BookingWithItems } from "./bookings";
 
-export async function sendBookingNotification(booking: Booking) {
-  const pizzaLines = Object.entries(booking.pizzas)
-    .filter(([, o]) => o.selected)
-    .map(([name, o]) => `• ${name} ×${o.qty}${o.notes ? ` (${o.notes})` : ""}`)
+export async function sendBookingNotification(booking: BookingWithItems) {
+  const pizzaLines = booking.items
+    .map((item) => `• ${item.product.name} ×${item.qty}${item.notes ? ` (${item.notes})` : ""}`)
     .join("\n");
 
   const body = `

@@ -1,20 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { getBookings, addBooking } from "@/lib/bookings";
 import { sendBookingNotification } from "@/lib/email";
+import { requireAdminOr401 } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
-async function isAdmin(): Promise<boolean> {
-  const store = await cookies();
-  const secret = process.env.ADMIN_SECRET ?? "change-this-secret";
-  return store.get("admin_token")?.value === secret;
-}
-
 export async function GET() {
-  if (!(await isAdmin())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const unauthorized = await requireAdminOr401();
+  if (unauthorized) return unauthorized;
   return NextResponse.json(await getBookings());
 }
 

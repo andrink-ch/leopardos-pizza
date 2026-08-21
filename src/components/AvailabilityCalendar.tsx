@@ -3,8 +3,13 @@
 import { useEffect, useState } from "react";
 import Calendar, { type CalendarMark } from "./Calendar";
 import BookingModal from "./BookingModal";
+import type { Product } from "@/lib/products";
 
-export default function AvailabilityCalendar() {
+interface Props {
+  products: Product[];
+}
+
+export default function AvailabilityCalendar({ products }: Props) {
   const [markedDates, setMarkedDates] = useState<Record<string, CalendarMark[]>>({});
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -57,7 +62,7 @@ export default function AvailabilityCalendar() {
         </div>
       </section>
 
-      {modalOpen && <BookingModal onClose={() => setModalOpen(false)} />}
+      {modalOpen && <BookingModal products={products} onClose={() => setModalOpen(false)} />}
     </>
   );
 }

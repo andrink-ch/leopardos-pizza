@@ -1,27 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import type { Booking } from "@/lib/types";
+import { useState, useEffect } from "react";
+import type { BookingWithItems, BookingStatus } from "@/lib/bookings";
 import Calendar, { type CalendarMark } from "./Calendar";
 
-const STATUS_LABEL: Record<Booking["status"], string> = {
+type Booking = BookingWithItems;
+
+const STATUS_LABEL: Record<BookingStatus, string> = {
   pending:  "Neu",
   accepted: "Angenommen",
   declined: "Abgelehnt",
 };
 
-const PIZZA_NAMES: Record<string, string> = {
-  margherita: "Margherita",
-  diavola:    "Diavola",
-  pistacchio: "Pistacchio",
-  marinara:   "Marinara",
-  funghi:     "Funghi",
-  salsiccia:  "Salsiccia",
-};
-
-function StatusBadge({ status }: { status: Booking["status"] }) {
-  const styles: Record<Booking["status"], string> = {
+function StatusBadge({ status }: { status: BookingStatus }) {
+  const styles: Record<BookingStatus, string> = {
     pending:  "bg-amber-100 text-amber-700",
     accepted: "bg-green-100 text-green-700",
     declined: "bg-red-100 text-red-600",
@@ -33,8 +25,8 @@ function StatusBadge({ status }: { status: Booking["status"] }) {
   );
 }
 
-function Dot({ status }: { status: Booking["status"] }) {
-  const color: Record<Booking["status"], string> = {
+function Dot({ status }: { status: BookingStatus }) {
+  const color: Record<BookingStatus, string> = {
     pending:  "bg-amber-400",
     accepted: "bg-green-500",
     declined: "bg-red-400",
@@ -48,28 +40,22 @@ export default function AdminDashboard() {
   const [expanded, setExpanded]         = useState<string | null>(null);
   const [view, setView]                 = useState<"list" | "calendar">("list");
   const [calSelectedDate, setCalDate]   = useState<string | null>(null);
-  const router = useRouter();
 
-  const fetchBookings = useCallback(async () => {
-    const res = await fetch("/api/bookings");
-    if (res.ok) setBookings(await res.json());
-    setLoading(false);
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("/api/bookings");
+      if (res.ok) setBookings(await res.json());
+      setLoading(false);
+    })();
   }, []);
 
-  useEffect(() => { fetchBookings(); }, [fetchBookings]);
-
-  const updateStatus = async (id: string, status: Booking["status"]) => {
+  const updateStatus = async (id: string, status: BookingStatus) => {
     await fetch(`/api/bookings/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
     });
     setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
-  };
-
-  const logout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.refresh();
   };
 
   const counts = {
@@ -80,26 +66,8 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-cream">
-      {/* Sticky header */}
-      <div className="bg-charcoal text-cream sticky top-0 z-10">
-        <div className="max-w-[1100px] mx-auto px-8 py-4 flex items-center justify-between">
-          <div className="font-heading font-bold text-[20px] flex items-center gap-[7px]">
-            Leopardo&apos;s
-            <span className="w-2 h-2 rounded-full bg-ember inline-block translate-y-0.5" />
-            <span className="text-cream/40 font-sans font-normal text-[14px] ml-2">Admin</span>
-          </div>
-          <button
-            onClick={logout}
-            className="text-[14px] text-cream/60 hover:text-cream transition-colors border-none bg-transparent cursor-pointer font-sans"
-          >
-            Abmelden →
-          </button>
-        </div>
-      </div>
-
-      <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 md:py-10">
-        {/* Stats */}
+    <>
+      {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {[
             { label: "Gesamt",      value: counts.total,    color: "text-charcoal" },
@@ -212,7 +180,6 @@ export default function AdminDashboard() {
         {view === "list" && <div className="flex flex-col gap-4">
           {bookings.map((b) => {
             const isOpen = expanded === b.id;
-            const selectedPizzas = Object.entries(b.pizzas ?? {}).filter(([, p]) => p.selected);
 
             return (
               <div
@@ -235,8 +202,8 @@ export default function AdminDashboard() {
                       <span>📅 {new Date(b.date).toLocaleDateString("de-DE")}</span>
                     )}
                     {b.guests && <span>👥 {b.guests} Gäste</span>}
-                    {selectedPizzas.length > 0 && (
-                      <span>🍕 {selectedPizzas.length} Sorte{selectedPizzas.length !== 1 ? "n" : ""}</span>
+                    {b.items.length > 0 && (
+                      <span>🍕 {b.items.length} Sorte{b.items.length !== 1 ? "n" : ""}</span>
                     )}
                   </div>
                   <StatusBadge status={b.status} />
@@ -281,18 +248,18 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* Pizzas */}
-                    {selectedPizzas.length > 0 && (
+                    {b.items.length > 0 && (
                       <div>
                         <div className="text-[11px] font-semibold text-stone uppercase tracking-wider mb-3">Pizzaauswahl</div>
                         <div className="flex flex-col gap-2">
-                          {selectedPizzas.map(([id, p]) => (
-                            <div key={id} className="flex items-start gap-3 text-[14px]">
+                          {b.items.map((item) => (
+                            <div key={item.id} className="flex items-start gap-3 text-[14px]">
                               <span className="font-semibold text-charcoal w-28 shrink-0">
-                                {PIZZA_NAMES[id] ?? id}
+                                {item.product.name}
                               </span>
-                              <span className="text-taupe">× {p.qty}</span>
-                              {p.notes && (
-                                <span className="text-stone italic">&quot;{p.notes}&quot;</span>
+                              <span className="text-taupe">× {item.qty}</span>
+                              {item.notes && (
+                                <span className="text-stone italic">&quot;{item.notes}&quot;</span>
                               )}
                             </div>
                           ))}
@@ -365,7 +332,6 @@ export default function AdminDashboard() {
             );
           })}
         </div>}
-      </div>
-    </div>
+    </>
   );
 }

@@ -1,33 +1,42 @@
 "use client";
 
 import { useState } from "react";
-import type { Booking } from "@/lib/types";
+import type { Product } from "@/lib/products";
 import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
 
 interface Props {
+  products: Product[];
   onClose: () => void;
 }
 
-const PIZZAS = [
-  { id: "margherita", name: "Margherita", desc: "Tomate, Mozzarella, Basilikum" },
-  { id: "diavola",    name: "Diavola",    desc: "Tomate, Mozzarella, Peperoni" },
-  { id: "pistacchio", name: "Pistacchio", desc: "Pistaziencreme, Mozzarella, Mortadella" },
-  { id: "marinara",   name: "Marinara",   desc: "Tomate, Knoblauch, Oregano (vegan)" },
-  { id: "funghi",     name: "Funghi",     desc: "Tomate, Mozzarella, Champignons" },
-  { id: "salsiccia",  name: "Salsiccia",  desc: "Tomate, Mozzarella, italienische Wurst" },
-];
-
 const DIETARY = ["Vegetarisch", "Vegan", "Glutenfrei", "Laktosefrei", "Nussfrei"];
 
-type PizzaOrder = Booking["pizzas"][string];
-type FormData   = Omit<Booking, "id" | "createdAt" | "status">;
+interface PizzaOrder {
+  selected: boolean;
+  qty: string;
+  notes: string;
+}
+
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  date: string;
+  time: string;
+  location: string;
+  guests: string;
+  dietary: string[];
+  allergies: string;
+  message: string;
+  pizzas: Record<string, PizzaOrder>;
+}
 
 const inputClass =
   "w-full px-4 py-[13px] rounded-[10px] bg-linen font-sans text-[15px] text-charcoal outline-none transition-colors focus:bg-white focus:border-ember";
 const borderStyle = { border: "1.5px solid rgba(27,23,20,.15)" };
 
-export default function BookingModal({ onClose }: Props) {
+export default function BookingModal({ products, onClose }: Props) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState("");
@@ -35,7 +44,7 @@ export default function BookingModal({ onClose }: Props) {
     name: "", email: "", phone: "", date: "", time: "",
     location: "", guests: "", dietary: [], allergies: "", message: "",
     pizzas: Object.fromEntries(
-      PIZZAS.map((p) => [p.id, { selected: false, qty: "1", notes: "" }])
+      products.map((p) => [p.id, { selected: false, qty: "1", notes: "" }])
     ),
   });
 
@@ -96,10 +105,18 @@ export default function BookingModal({ onClose }: Props) {
                 setLoading(true);
                 setError("");
                 try {
+                  const { pizzas, ...rest } = form;
+                  const items = Object.entries(pizzas)
+                    .filter(([, o]) => o.selected)
+                    .map(([productId, o]) => ({
+                      productId,
+                      qty: Number(o.qty) || 1,
+                      notes: o.notes || undefined,
+                    }));
                   const res = await fetch("/api/bookings", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(form),
+                    body: JSON.stringify({ ...rest, items }),
                   });
                   if (!res.ok) throw new Error("Fehler beim Senden");
                   setSubmitted(true);
@@ -173,11 +190,11 @@ export default function BookingModal({ onClose }: Props) {
               </h3>
               <p className="text-[13px] text-stone mb-4">Wähle deine gewünschten Sorten und die ungefähre Anzahl der Pizzen pro Sorte.</p>
               <div className="flex flex-col gap-3">
-                {PIZZAS.map((pizza) => {
-                  const order = form.pizzas[pizza.id];
+                {products.map((product) => {
+                  const order = form.pizzas[product.id];
                   return (
                     <div
-                      key={pizza.id}
+                      key={product.id}
                       className="rounded-[12px] transition-colors"
                       style={{
                         border: order.selected
@@ -191,7 +208,7 @@ export default function BookingModal({ onClose }: Props) {
                         {/* Custom checkbox */}
                         <button
                           type="button"
-                          onClick={() => updatePizza(pizza.id, "selected", !order.selected)}
+                          onClick={() => updatePizza(product.id, "selected", !order.selected)}
                           className="w-5 h-5 rounded-[5px] flex items-center justify-center shrink-0 transition-colors border-none cursor-pointer"
                           style={{
                             background: order.selected ? "#D8542B" : "transparent",
@@ -205,8 +222,8 @@ export default function BookingModal({ onClose }: Props) {
                           )}
                         </button>
                         <div className="flex-1">
-                          <span className="font-semibold text-[15px] text-charcoal">{pizza.name}</span>
-                          <span className="text-[13px] text-stone ml-2">{pizza.desc}</span>
+                          <span className="font-semibold text-[15px] text-charcoal">{product.name}</span>
+                          <span className="text-[13px] text-stone ml-2">{product.description}</span>
                         </div>
                         {order.selected && (
                           <div className="flex items-center gap-2 shrink-0">
@@ -216,7 +233,7 @@ export default function BookingModal({ onClose }: Props) {
                               min="1"
                               max="50"
                               value={order.qty}
-                              onChange={(e) => updatePizza(pizza.id, "qty", e.target.value)}
+                              onChange={(e) => updatePizza(product.id, "qty", e.target.value)}
                               className="w-16 px-2 py-1 rounded-[8px] text-[14px] text-center text-charcoal outline-none focus:border-ember transition-colors"
                               style={{ border: "1.5px solid rgba(27,23,20,.2)", background: "#fff" }}
                             />
@@ -228,7 +245,7 @@ export default function BookingModal({ onClose }: Props) {
                           <input
                             type="text"
                             value={order.notes}
-                            onChange={(e) => updatePizza(pizza.id, "notes", e.target.value)}
+                            onChange={(e) => updatePizza(product.id, "notes", e.target.value)}
                             placeholder="Sonderwünsche für diese Pizza (z.B. extra scharf, ohne Zwiebeln…)"
                             className="w-full px-3 py-[10px] rounded-[8px] bg-white font-sans text-[13px] text-charcoal outline-none focus:border-ember transition-colors"
                             style={{ border: "1.5px solid rgba(27,23,20,.12)" }}

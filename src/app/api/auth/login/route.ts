@@ -1,18 +1,15 @@
 import { NextResponse } from "next/server";
+import { verifyCredentials, adminSecret, COOKIE_NAME } from "@/lib/auth";
 
 export async function POST(req: Request) {
   const { username, password } = await req.json();
 
-  const validUser = process.env.ADMIN_USERNAME ?? "admin";
-  const validPass = process.env.ADMIN_PASSWORD ?? "leopardo2026";
-  const secret   = process.env.ADMIN_SECRET   ?? "change-this-secret";
-
-  if (username !== validUser || password !== validPass) {
+  if (!verifyCredentials(username, password)) {
     return NextResponse.json({ error: "Ungültige Zugangsdaten" }, { status: 401 });
   }
 
   const res = NextResponse.json({ ok: true });
-  res.cookies.set("admin_token", secret, {
+  res.cookies.set(COOKIE_NAME, adminSecret(), {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
